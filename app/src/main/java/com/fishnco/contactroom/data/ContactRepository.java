@@ -23,7 +23,7 @@ public class ContactRepository {
     }
 
     //Getter for allContacts
-    public LiveData<List<Contact>> getAllContacts() {
+    public LiveData<List<Contact>> getAllData() {
         return allContacts;
     }
 
