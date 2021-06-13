@@ -7,4 +7,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="formStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:ems">10</item>
+        <item name="android:inputType">textPersonName</item>
+        <item name="android:padding">@dimen/padding_general</item>
+    </style>
+
 </resources>
