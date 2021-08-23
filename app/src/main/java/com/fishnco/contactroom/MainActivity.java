@@ -20,10 +20,12 @@ import com.fishnco.contactroom.model.ContactViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnContactClickListener {
 
     private static final int NEW_CONTACT_ACTIVITY_REQUEST_CODE = 1;
+    private static final String TAG = "Clicked";
     private ContactViewModel contactViewModel;
     private TextView textView;
     private RecyclerView recyclerView;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<Contact> contacts) {
 
                 // Everytime something changes, to run this.
-                recyclerViewAdapter = new RecyclerViewAdapter(contacts, MainActivity.this);
+                recyclerViewAdapter = new RecyclerViewAdapter(contacts, MainActivity.this, MainActivity.this);
                 recyclerView.setAdapter(recyclerViewAdapter);
 
 //                StringBuilder builder = new StringBuilder();
@@ -85,5 +87,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "onActivityResult: " + data.getStringExtra(NewContact.NAME_REPLY));
             Log.d("MainActivity", "onActivityResult: " + data.getStringExtra(NewContact.OCCUPATION_REPLY));
         }
+    }
+
+    @Override
+    public void onContactClick(int position) {
+        Log.d(TAG, "onContactClick: " + position);
+        Contact contact = Objects.requireNonNull(contactViewModel.allContacts.getValue()).get(position);
+        Log.d(TAG, "onContactClick: " + contact.getName());
     }
 }
