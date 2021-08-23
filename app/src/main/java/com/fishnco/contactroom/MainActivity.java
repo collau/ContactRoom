@@ -2,8 +2,11 @@ package com.fishnco.contactroom;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.fishnco.contactroom.adapter.RecyclerViewAdapter;
 import com.fishnco.contactroom.model.Contact;
 import com.fishnco.contactroom.model.ContactViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,11 +26,18 @@ public class MainActivity extends AppCompatActivity {
     private static final int NEW_CONTACT_ACTIVITY_REQUEST_CODE = 1;
     private ContactViewModel contactViewModel;
     private TextView textView;
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter recyclerViewAdapter;
+    private LiveData<List<Contact>> contactList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Any other form of model provider will lead to an error
         contactViewModel = new ViewModelProvider.AndroidViewModelFactory(MainActivity.this.getApplication())
@@ -36,14 +47,19 @@ public class MainActivity extends AppCompatActivity {
         contactViewModel.getAllContacts().observe(this, new Observer<List<Contact>>() {
             @Override
             public void onChanged(List<Contact> contacts) {
-                StringBuilder builder = new StringBuilder();
-                for (Contact contact: contacts)
-                {
-                    builder.append(" - ").append(contact.getName()).append(" ").append(contact.getOccupation());
-                    Log.d("MainActivity", "onCreate: " + contact.getName());
-                    Log.d("MainActivity", "onCreate: " + contact.getId());
-                    Log.d("MainActivity", "onCreate: " + contact.getOccupation());
-                }
+
+                // Everytime something changes, to run this.
+                recyclerViewAdapter = new RecyclerViewAdapter(contacts, MainActivity.this);
+                recyclerView.setAdapter(recyclerViewAdapter);
+
+//                StringBuilder builder = new StringBuilder();
+//                for (Contact contact: contacts)
+//                {
+//                    builder.append(" - ").append(contact.getName()).append(" ").append(contact.getOccupation());
+//                    Log.d("MainActivity", "onCreate: " + contact.getName());
+//                    Log.d("MainActivity", "onCreate: " + contact.getId());
+//                    Log.d("MainActivity", "onCreate: " + contact.getOccupation());
+//                }
 
             }
         });
