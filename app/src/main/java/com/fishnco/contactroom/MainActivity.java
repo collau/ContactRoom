@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.text);
 
         //Any other form of model provider will lead to an error
         contactViewModel = new ViewModelProvider.AndroidViewModelFactory(MainActivity.this.getApplication())
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("MainActivity", "onCreate: " + contact.getId());
                     Log.d("MainActivity", "onCreate: " + contact.getOccupation());
                 }
-                textView.setText(builder.toString());
 
             }
         });
