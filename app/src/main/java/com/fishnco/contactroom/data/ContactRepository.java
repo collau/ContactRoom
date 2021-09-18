@@ -36,4 +36,26 @@ public class ContactRepository {
             }
         });
     }
+
+    public LiveData<Contact> get(int id) {
+        return contactDAO.get(id);
+    }
+
+    public void update(final Contact contact) {
+        ContactRoomDatabase.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                contactDAO.update(contact);
+            }
+        });
+    }
+
+    public void delete(final Contact contact) {
+        ContactRoomDatabase.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                contactDAO.delete(contact);
+            }
+        });
+    }
 }
