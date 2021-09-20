@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.fishnco.contactroom.model.Contact;
@@ -34,6 +35,18 @@ public class NewContact extends AppCompatActivity {
         buttonSave = findViewById(R.id.button_save);
 
         contactViewModel = new ViewModelProvider.AndroidViewModelFactory(NewContact.this.getApplication()).create(ContactViewModel.class);
+
+        Bundle data = getIntent().getExtras();
+        if (data != null) {
+            int id = data.getInt(MainActivity.CONTACT_ID);
+            contactViewModel.get(id).observe(this, new Observer<Contact>() {
+                @Override
+                public void onChanged(Contact contact) {
+                    editText_name.setText(contact.getName());
+                    editText_occupation.setText(contact.getOccupation());
+                }
+            });
+        }
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
