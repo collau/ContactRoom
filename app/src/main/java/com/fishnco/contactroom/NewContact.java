@@ -89,20 +89,15 @@ public class NewContact extends AppCompatActivity {
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int id = contactId;
-                String name = editText_name.getText().toString().trim();
-                String occupation = editText_occupation.getText().toString().trim();
+                editContact(false);
+            }
+        });
 
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(occupation)) {
-                    Snackbar.make(editText_name, R.string.empty, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Contact contact = new Contact();
-                    contact.setId(id);
-                    contact.setName(name);
-                    contact.setOccupation(occupation);
-                    ContactViewModel.update(contact);
-                    finish();
-                }
+        //Delete button
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editContact(true);
             }
         });
 
@@ -111,6 +106,25 @@ public class NewContact extends AppCompatActivity {
         } else {
             buttonUpdate.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
+        }
+    }
+
+    private void editContact(Boolean isDelete) {
+        String name = editText_name.getText().toString().trim();
+        String occupation = editText_occupation.getText().toString().trim();
+
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(occupation)) {
+            Snackbar.make(editText_name, R.string.empty, Snackbar.LENGTH_SHORT).show();
+        } else {
+            Contact contact = new Contact();
+            contact.setId(contactId);
+            contact.setName(name);
+            contact.setOccupation(occupation);
+            if (isDelete)
+                ContactViewModel.delete(contact);
+            else
+                ContactViewModel.update(contact);
+            finish();
         }
     }
 }
