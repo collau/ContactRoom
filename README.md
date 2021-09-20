@@ -4,3 +4,4 @@ SQLite and ROOM Library - Android App Architecture - Persistence Layer
 
 ## Resources
 https://developer.android.com/training/data-storage/room/index.html
+https://github.com/codepath/android_guides/wiki/Using-the-RecyclerView
