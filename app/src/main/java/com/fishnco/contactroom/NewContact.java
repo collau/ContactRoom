@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.fishnco.contactroom.model.Contact;
 import com.fishnco.contactroom.model.ContactViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 public class NewContact extends AppCompatActivity {
     public static final String NAME_REPLY = "name_reply";
@@ -21,6 +22,10 @@ public class NewContact extends AppCompatActivity {
     private EditText editText_name;
     private EditText editText_occupation;
     private Button buttonSave;
+    private Button buttonUpdate;
+    private Button buttonDelete;
+    private int contactId = 0;
+    private Boolean isEdit = false;
 
     //Look how easy it is now
     private ContactViewModel contactViewModel;
@@ -33,19 +38,24 @@ public class NewContact extends AppCompatActivity {
         editText_name = findViewById(R.id.editText_contactName);
         editText_occupation = findViewById(R.id.editText_occupation);
         buttonSave = findViewById(R.id.button_save);
+        buttonUpdate = findViewById(R.id.button_update);
+        buttonDelete = findViewById(R.id.button_delete);
 
         contactViewModel = new ViewModelProvider.AndroidViewModelFactory(NewContact.this.getApplication()).create(ContactViewModel.class);
 
-        Bundle data = getIntent().getExtras();
-        if (data != null) {
-            int id = data.getInt(MainActivity.CONTACT_ID);
-            contactViewModel.get(id).observe(this, new Observer<Contact>() {
+        if (getIntent().hasExtra(MainActivity.CONTACT_ID)) {
+            contactId = getIntent().getIntExtra(MainActivity.CONTACT_ID, 0);
+
+            contactViewModel.get(contactId).observe(this, new Observer<Contact>() {
                 @Override
                 public void onChanged(Contact contact) {
-                    editText_name.setText(contact.getName());
-                    editText_occupation.setText(contact.getOccupation());
+                    if (contact != null) {
+                        editText_name.setText(contact.getName());
+                        editText_occupation.setText(contact.getOccupation());
+                    }
                 }
             });
+            isEdit = true;
         }
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -74,5 +84,33 @@ public class NewContact extends AppCompatActivity {
 
             }
         });
+
+        //Update button
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = contactId;
+                String name = editText_name.getText().toString().trim();
+                String occupation = editText_occupation.getText().toString().trim();
+
+                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(occupation)) {
+                    Snackbar.make(editText_name, R.string.empty, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Contact contact = new Contact();
+                    contact.setId(id);
+                    contact.setName(name);
+                    contact.setOccupation(occupation);
+                    ContactViewModel.update(contact);
+                    finish();
+                }
+            }
+        });
+
+        if (isEdit) {
+            buttonSave.setVisibility(View.GONE);
+        } else {
+            buttonUpdate.setVisibility(View.GONE);
+            buttonDelete.setVisibility(View.GONE);
+        }
     }
 }
